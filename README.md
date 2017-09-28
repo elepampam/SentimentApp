@@ -5,3 +5,15 @@ Build using node.JS and express
 
 ## Method
 using genetics algorithm and support vector machine
+
+## how to use
+run the appilcation using 
+`npm start`
+
+chose the data you want from /dataset then chose the ration u want to use
+
+- upload the dataset in 'manajamen dataset' menu
+- start 'preprcessing' proses from preprocessing menu
+- start selection feature
+- start training proses
+- upload dokumen to test from /dataset then start analysis process
