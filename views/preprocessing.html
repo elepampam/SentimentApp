@@ -1,0 +1,213 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+<style type="text/css">
+    .loader {
+        margin: auto;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    #hidden-wait{
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(179, 173, 173, 0.5);
+        z-index: 1;
+        -webkit-transition: all 0.5s ease-out;
+        -moz-transition: all 0.5s ease-out;
+        -o-transition: all 0.5s ease-out;
+        transition: all 0.5s ease-out;
+        transition-delay: all 1.5s;
+        /*display: none;*/
+        visibility: hidden;
+        opacity: 0;
+    }
+</style>
+
+<div id="hidden-wait">
+    <p style="
+    font-size: 25px;
+    margin: 200px auto 0 auto;
+    font-weight: bold;
+    ">Waiting...</p>
+    <p>It may take a long time.</p>
+    <div class="loader"></div>
+</div>
+  <div id="wrapper">
+      {% include 'action.html' %}
+    <nav class="navbar navbar-default" style="margin-bottom:0px;">
+        <p id="appname">SentimentApp</p>
+    </nav>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+            <button class="btn btn-default" style="margin: 0;position:absolute;right:85px;" data-toggle="modal" data-target="#modalTerm" data-backdrop="static">List Of Term</button>
+                    <button class="btn btn-primary" style="position:absolute;right:10px;" id="start">START</button>
+                <ol class="breadcrumb" style="background-color:transparent">
+                  <li><span>SentimentApp</span></li>
+                  <li><a href="/preprocessing">Preprocessing</a></li>
+                </ol>
+                <div class="alert alert-info" style="margin-top:10px;">
+                    <strong>Info Kelas!</strong>
+                    1 : <strong>Positif</strong>, -1 : <strong>Negatif</strong>
+                </div>
+                <hr>
+                <ul class="nav nav-tabs">
+                  <li class="active"><a class="tabs" href="#" data-target="dataTraining" id="dataTraining">Data Training</a></li>                 
+                  <li><a class="tabs" href="#" data-target="token">tokennizing</a></li>
+                  <li><a class="tabs" href="#" data-target="norm">normalisasi</a></li>
+                  <li><a class="tabs" href="#" data-target="filter">filtering</a></li>
+                  <li><a class="tabs" href="#" data-target="stem">stemming</a></li>
+                </ul>
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Dok</th>
+                            <th>Acara</th>
+                            <th>Dokumen</th>
+                            <th>Kelas</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tabelBody">
+                            
+                        </tbody>
+                    </table> 
+                </div>
+
+            </div>
+        </div>
+        <!-- Modal -->
+            <div id="modalTerm" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">List Of Term</h4>
+                  </div>
+                  <div class="modal-body">
+                    <table class="table table-striped table-responsive" style="display:block;height:250px;overflow-y:scroll">
+                        <thead style="display:table;width:100%">
+                            <tr>
+                                <th>List Of Term</th>                                
+                            </tr>
+                        </thead>
+                        <tbody id="tabelTerm" style="display:table;width:100%">
+
+                        </tbody>
+                    </table>                     
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+
+{% endblock %}
+
+{% block customjs %}
+<script>
+	$("#menu-toggle").click(function(e) {
+	    e.preventDefault();
+	    $("#wrapper").toggleClass("toggled");
+	});
+    $(".tabs").on("click", function(e){
+        e.preventDefault();
+        $(".tabs").parent().removeClass("active");
+        $(this).parent().toggleClass("active");
+        if (data != undefined) {
+            updateTable(data[$(this).data("target")], $(this).data("target"));
+        }
+        console.log($(this).data("target"));
+    })    
+    
+    var data;
+
+    $('#start').on('click', function(e){                            
+        $.ajax({
+            url: '/pre',
+            type: 'POST',            
+            contentType: false,
+            processData: false,      
+            beforeSend: function(){
+                $('#hidden-wait').css('visibility','visible');
+                $('#hidden-wait').css('opacity','1');
+            },       
+            success: function(result){
+                data = JSON.parse(result); 
+                // $("#dataTraining").click();
+                updateTable(data.dataTraining,'dataTraining');    
+                updateTableFiture(data.fiture);
+                $('#hidden-wait').css('opacity','0');                      
+                $('#hidden-wait').css('visibility','hidden');
+            },
+            xhr: function(){
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener('loading', function(evt){
+                    console.log("chr" +evt);
+                    if (evt.lengthComputable) {
+                        console.log(evt.loaded);
+                    }
+                }, false);
+                return xhr;
+            }
+        });        
+    });
+	
+	function updateTable(temp, target){        
+		var body = "";		
+        console.log(temp.length);
+        temp.map(function(dok){
+            body += "<tr>";
+            body += "<td>"+dok.Dokumen+"</td>";
+            body += "<td class='chromosome'>"+dok.Acara+"</td>";
+            body += "<td>"+dok.Tweet+"</td>";
+            body += "<td>"+dok.Kelas+"</td>";
+            body += "</tr>";
+        });
+		$('#tabelBody').html(body);
+	}
+
+    function updateTableFiture(fiture){
+        var body = "";
+        fiture.map(function(term){            
+            body += "<tr>";
+            body += "<td>"+term+"</td>";
+            body += "</td>";
+        });
+        $("#tabelTerm").html(body);
+    }
+    $(document).ready(function(){
+        // $('#nav-icon3').click(function(){
+        //     $(this).toggleClass('open');
+        // });
+         $('[data-toggle="tooltip"]').tooltip({container: 'body'}); 
+        $('#user-action').on('click', function(e){
+            $('#nav-icon3').toggleClass('open');
+            $(this).toggleClass('open');
+
+        });
+    });
+</script>
+{% endblock %}

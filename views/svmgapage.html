@@ -1,0 +1,357 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<style type="text/css">
+    .loader {
+        margin: auto;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    #hidden-wait{
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(179, 173, 173, 0.5);
+        z-index: 1;
+        -webkit-transition: all 0.5s ease-out;
+        -moz-transition: all 0.5s ease-out;
+        -o-transition: all 0.5s ease-out;
+        transition: all 0.5s ease-out;
+        transition-delay: all 1.5s;
+        /*display: none;*/
+        visibility: hidden;
+        opacity: 0;
+    }
+</style>
+
+<div id="hidden-wait">
+    <p style="
+    font-size: 25px;
+    margin: 200px auto 0 auto;
+    font-weight: bold;
+    ">Waiting...</p>
+    <p>It may take a long time.</p>
+    <div class="loader"></div>
+</div>
+
+  <div id="wrapper">
+    {% include 'action.html' %}
+    <nav class="navbar navbar-default" style="margin-bottom:0px;">
+        <p id="appname">SentimentApp</p>
+    </nav>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <ol class="breadcrumb" style="background-color:transparent">
+                  <li><span>SentimentApp</span></li>
+                  <li><a href="/training">Seleksi Fitur SVM-GA</a></li>
+                </ol>
+                <div class="row">
+                    <div class="col-lg-12">
+                       <div class="col-lg-7 form-panel">
+                           <form method="post" action="/train" id="formparams">      
+                                <p style="text-align:center"><label>SVM Parameter : </label></p>
+                                <label>Iterasi Maksimum SVM</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="Iterasi Maksimum SVM..." id="maxIterSVM">
+                                </div>
+                                <label>Lambda</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="Lambda..." id="lambda">
+                                </div>
+                                <label>C</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="C..." id="c">
+                                </div>
+                                <label>Learning rate</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="learning rate..." id="learningRate">
+                                </div>
+                                <label>Kernel yang digunakan</label>
+                                <div class="radio">
+                                    <label><input type="radio" value="1" name="kernel">Polynomial</label>         
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" value="2" name="kernel">Gaussian</label>
+                                </div>
+                                <label>Kernel Paramameter</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="degree / tho" id="kernelParam">
+                                </div> 
+                                <p style="text-align:center"><label>Algen Parameter :</label></p>
+                                <label>Iterasi Maksimum Algen</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="Iterasi Maksimum Algen..." id="maxIterAlgen">
+                                </div>
+                                <label>Pop size</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="Pop size..." id="popSize">
+                                </div>
+                                <label>Crossover Rate</label>
+                                <div class="form-group">                                  
+                                    <input type="text" class="form-control" placeholder="Crossover Rate..." id="crosoverRate">
+                                </div>                           
+                       </div>
+                       <button class="btn btn-primary" style="margin:0;position:absolute;bottom:0;right:0;">submit</button>
+                       		</form>
+                    </div>                                     
+                </div>
+                <hr>
+                <div>
+                    <button class="btn btn-default" style="height: 50px;" data-toggle="tooltip" title="show alpha" id="alphaBtn">Alpha</button>
+                  
+                    <button class="btn btn-default" style="border-radius: 50%;height: 50px;width: 50px;" id="next" data-toggle="tooltip" title="next iteration">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </button>
+                    <button class="btn btn-default" style="width: 50px;border-radius: 50%;height: 50px;" id="skip" data-toggle="tooltip" title="skip">
+                       <i class="glyphicon glyphicon-fast-forward"></i>
+                    </button>
+                    <span>Iterasi ke-<span id="iter"></span></span>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th class="chromosome">Chromosome</th>
+                        <th>Beta</th>
+                        <th>Akurasi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tabelBody">
+						
+                    </tbody>
+                </table>      
+            </div>
+            <!-- Modal -->
+            <div id="modalAlpha" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Alpha</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <label for="sel1">Pilih Individu:</label>
+                      <select class="form-control" id="individu">
+                        <option disabled="true" selected="true">Individu...</option>                        
+                      </select>                                            
+                    </div>
+                    <table class="table table-striped" id="tabelAlpha" style="display:block;height:250px;overflow-y:scroll;">
+                        <thead style="display:table;width:100%">
+                          <tr>
+                            <th>Dokumen No.</th>                            
+                            <th>Alpha</th>                            
+                          </tr>
+                        </thead>
+                        <tbody style="display:table;width:100%">
+
+                        </tbody>
+                    </table>  
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+
+{% endblock %}
+
+{% block customjs %}
+<script>
+	$("#menu-toggle").click(function(e) {
+	    e.preventDefault();
+	    $("#wrapper").toggleClass("toggled");
+	});
+
+    $('#alphaBtn').click(function(e) {
+        $('#modalAlpha').modal({'backdrop': 'static'});
+    });
+
+    var training = {};
+    var maksIter;
+
+	$('#formparams').submit(function(e){
+		var data = {};
+        data.input = {};
+		data.input.maxIterAlgen = $('#maxIterAlgen').val();
+		data.input.crosoverRate = $('#crosoverRate').val();
+		data.input.popSize = $('#popSize').val();
+		data.input.maxIterSVM = $('#maxIterSVM').val();
+		data.input.learningRate = $('#learningRate').val();
+		data.input.lambda = $('#lambda').val();
+		data.input.c = $('#c').val();
+		data.input.kernel = $('input[name=kernel]:checked').val();
+        data.input.kernelParam = $('#kernelParam').val();
+        data.input.target = $('#maxIterAlgen').val() - 1;
+        maksIter = $('#maxIterAlgen').val();
+        // console.log("kirim");
+        // console.log(data);
+		e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            cache: false,
+            contentType: 'application/json',
+            datatype: "json",
+            url: '/train',
+            beforeSend: function(){
+                $('#hidden-wait').css('visibility','visible');
+                $('#hidden-wait').css('opacity','1');
+            }, 
+            success: function (result, status, xhr) {                            
+                console.log('success');
+                training = result;
+                // console.log(training);
+                updateTable(training.populasi);
+                $('#iter').html(maksIter - training.input.maxIterAlgen);
+                $('#hidden-wait').css('opacity','0');                      
+                $('#hidden-wait').css('visibility','hidden'); 
+                var option = "<option disabled selected>Individu...</option>";
+                for (var i = 0; i < training.populasi.length; i++) {
+                    option += "<option value='"+i+"'>Individu "+(i+1)+"</option>";                    
+                }                   
+                $('#individu').html(option);
+            },
+            error: function(status, textStatus){
+            	console.log(status);
+            	console.log('status :'+textStatus);
+            }                    
+        });
+	})
+
+    $("#next").on('click', function(e){
+        if (training.input != undefined) {
+            training.input.target--;
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(training),
+                cache: false,
+                contentType: 'application/json',
+                datatype: "json",
+                url: '/train',
+                beforeSend: function(){
+                    $('#hidden-wait').css('visibility','visible');
+                    $('#hidden-wait').css('opacity','1');
+                }, 
+                success: function (result, status, xhr) {                            
+                    console.log('success');
+                    training = result;
+                    console.log(training);
+                    updateTable(training.populasi);                 
+                    $('#iter').html(maksIter - training.input.maxIterAlgen);
+                    $('#hidden-wait').css('opacity','0');                      
+                    $('#hidden-wait').css('visibility','hidden');  
+                    var option = "<option disabled selected>Individu...</option>";
+                    for (var i = 0; i < training.populasi.length; i++) {
+                        option += "<option value='"+i+"'>Individu "+(i+1)+"</option>";                    
+                    }                   
+                },
+                error: function(status, textStatus){
+                    console.log(status);
+                    console.log('status :'+textStatus);
+                }                    
+            });
+        }
+    });
+
+     $("#skip").on('click', function(e){
+        if (training.input != undefined) {
+            training.input.target = 0;
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(training),
+                cache: false,
+                contentType: 'application/json',
+                datatype: "json",
+                url: '/train',
+                beforeSend: function(){
+                    $('#hidden-wait').css('visibility','visible');
+                    $('#hidden-wait').css('opacity','1');
+                }, 
+                success: function (result, status, xhr) {                            
+                    console.log('success');
+                    training = result;
+                    // console.log(training);
+                    updateTable(training.populasi);                    
+                    $('#iter').html(maksIter);
+                    $('#hidden-wait').css('opacity','0');                      
+                    $('#hidden-wait').css('visibility','hidden');                    
+                    var option = "<option disabled selected>Individu...</option>";
+                    for (var i = 0; i < training.populasi.length; i++) {
+                        option += "<option val='"+i+"'>Individu "+(i+1)+"</option>";                    
+                    } 
+                },
+                error: function(status, textStatus){
+                    console.log(status);
+                    console.log('status :'+textStatus);
+                }                    
+            });
+        }
+    });
+
+     $('#individu').on('change', function(){
+        var individuIndek = $('#individu option:selected').val();
+        console.log(individuIndek);
+        var tempTable = "";
+        console.log(training.populasi[individuIndek]);
+        training.populasi[individuIndek].alpha.map(function(alphaVal, index){
+            tempTable += "<tr><td>Dokumen "+(index+1)+"</td><td>"+alphaVal+"</td></tr>"
+        });
+        $('#tabelAlpha').find('tbody').html(tempTable);
+     });
+
+
+	function updateTable(data){
+        console.log('sdfsdfsdf'+data);
+		var body = "";
+		var count = 0;
+		data.map(function(individu){
+			body += "<tr>";
+			body += "<td>"+(++count)+"</td>";
+			body += "<td class='chromosome'>"+individu.chromosome+"</td>";
+			body += "<td>"+individu.beta+"</td>";
+			body += "<td>"+individu.akurasi+"</td>";
+			body += "</tr>";
+		});
+		$('#tabelBody').html(body);
+	}
+    $('input[type=radio').on('click', function(){
+        $('#kernelParam').val('');
+    });
+    $(document).ready(function(){
+        // $('#nav-icon3').click(function(){
+        //     $(this).toggleClass('open');
+        // });
+         $('[data-toggle="tooltip"]').tooltip({container: 'body'}); 
+        $('#user-action').on('click', function(e){
+            $('#nav-icon3').toggleClass('open');
+            $(this).toggleClass('open');
+
+        });
+    });
+</script>
+{% endblock %}

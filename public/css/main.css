@@ -1,0 +1,293 @@
+/*!
+ * Start Bootstrap - Simple Sidebar (http://startbootstrap.com/)
+ * Copyright 2013-2016 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
+ */
+
+ body {
+    overflow-x: hidden;
+ }
+
+/* Toggle Styles */
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+    z-index: 1;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: #000;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 20% 0 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #999999;
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+}
+
+/*.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}*/
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 0;
+    }
+
+    #wrapper.toggled {
+        padding-left: 250px;
+    }
+
+    #sidebar-wrapper {
+        width: 0;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 250px;
+    }
+
+    #page-content-wrapper {
+        padding: 10px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
+
+/*custom css*/
+.btn-default{
+    margin: 5px;
+}
+
+.form-panel{
+    background-color: #e7e7e7;
+    padding: 10px;
+    border-radius: 10px
+}
+
+.table tr .chromosome{
+    max-width: 500px;
+    word-wrap: break-word;
+}
+
+#appname{
+    font-family: 'Pacifico', cursive;
+    font-size: 25px;
+    text-align: center;
+    margin: 10px auto;
+}
+
+ #nav-icon3{
+      width: 75px;
+      background-color: #eee;
+      height: 75px;
+      border-radius: 50%;
+      box-shadow: 3px 4px 15px 4px #948e8e;
+      position: absolute;
+      z-index: 10;
+      margin: auto;
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-transition: .5s ease-in-out;
+      -moz-transition: .5s ease-in-out;
+      -o-transition: .5s ease-in-out;
+      transition: .5s ease-in-out;
+      cursor: pointer;
+    }
+
+    #nav-icon3 span{
+      display: block;
+      margin: 15px 20px;
+      position: absolute;
+      height: 5px;
+      width: 50%;
+      background: #796b6b;
+      border-radius: 9px;
+      opacity: 1;
+      left: 0;
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-transition: .25s ease-in-out;
+      -moz-transition: .25s ease-in-out;
+      -o-transition: .25s ease-in-out;
+      transition: .25s ease-in-out;
+    }
+    /* Icon 3 */
+
+    #nav-icon3 span:nth-child(1) {
+      top: 7px;
+    }
+
+    #nav-icon3 span:nth-child(2),#nav-icon3 span:nth-child(3) {
+      top: 18px;
+    }
+
+    #nav-icon3 span:nth-child(4) {
+      top: 29px;
+    }
+
+    #nav-icon3.open span:nth-child(1) {
+      top: 18px;
+      width: 0%;
+      left: 50%;
+    }
+
+    #nav-icon3.open span:nth-child(2) {
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+
+    #nav-icon3.open span:nth-child(3) {
+      -webkit-transform: rotate(-45deg);
+      -moz-transform: rotate(-45deg);
+      -o-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+    }
+
+    #nav-icon3.open span:nth-child(4) {
+      top: 18px;
+      width: 0%;
+      left: 50%;
+    }
+
+    #user-action{
+        position: fixed;
+        bottom: 0;
+        z-index: 5;        
+        width: auto;
+        height: 75px;
+    }
+
+    #user-action.open > a.circle-icon:nth-child(1){        
+        left: 100px;
+        transition: all 0.5s ease;
+    }   
+    #user-action.open > a.circle-icon:nth-child(2){        
+        left: 175px;
+        transition: all 0.5s ease;
+    }   
+    #user-action.open > a.circle-icon:nth-child(3){        
+        left: 250px;
+        transition: all 0.5s ease;
+    }   
+    #user-action.open > a.circle-icon:nth-child(4){        
+        left: 325px;
+        transition: all 0.5s ease;
+    }   
+    #user-action.open > a.circle-icon:nth-child(5){        
+        left: 400px;
+        transition: all 0.5s ease;
+    }   
+
+    .circle-icon{
+        left: 0;
+        width: 60px;
+        height: 60px;
+        background-color: #eee;
+        position: absolute;
+        z-index: 4;
+        top: 10px;        
+        border-radius: 50%;
+        text-align: center;
+        font-size: 25px;   
+        transition: left 0.5s ease;     
+    }
+    #nav-icon3:hover, .circle-icon:hover{
+        background-color: #c1bfbf;
+        transition: all 0.5s ease;
+    }
+    .circle-icon:hover i{
+        color: #fff;
+        transition: all 0.5s ease;
+    }
+    #nav-icon3:hover span{
+        background: #fff;
+        transition: all 0.5s ease;
+    }
+    .circle-icon i{
+        margin: 15px auto;
+        text-decoration: none;
+        color: #796b6b;
+    }    

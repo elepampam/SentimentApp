@@ -1,0 +1,131 @@
+{% extends 'layout.html' %} {% block title %}{% endblock %} {% block content %}
+<style type="text/css">
+    .loader {
+        margin: auto;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    #hidden-wait{
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(179, 173, 173, 0.5);
+        z-index: 1;
+        -webkit-transition: all 0.5s ease-out;
+        -moz-transition: all 0.5s ease-out;
+        -o-transition: all 0.5s ease-out;
+        transition: all 0.5s ease-out;
+        transition-delay: all 1.5s;
+        /*display: none;*/
+        visibility: hidden;
+        opacity: 0;
+    }
+</style>
+
+<div id="hidden-wait">
+    <p style="
+    font-size: 25px;
+    margin: 200px auto 0 auto;
+    font-weight: bold;
+    ">Waiting...</p>
+    <p>It may take a long time.</p>
+    <div class="loader"></div>
+</div>
+<div id="wrapper">
+    {% include 'action.html' %}
+    <nav class="navbar navbar-default" style="margin-bottom:0px;">
+        <p id="appname">SentimentApp</p>
+    </nav>
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+         <button class="btn btn-primary" style="position:absolute;right:10px" id="hitung">HITUNG RATING TV</button>
+            <ol class="breadcrumb" style="background-color:transparent">
+              <li><span>SentimentApp</span></li>
+              <li><a href="/rating">Rating Program TV</a></li>
+            </ol>      
+            <hr>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Acara TV</th>
+                        <th>Stasiun</th>
+                        <th>Rating TV</th>
+                        <th>Rating Sistem</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBody">
+                
+                {% for acara in acaras %}  
+                <tr>
+                    <td>{{ acara.No }}</td>
+                    <td>{{ acara.Acara }}</td>
+                    <td>{{ acara.Stasiun }}</td>
+                    <td>{{ acara.Rating }}</td>                
+                    {% endfor %}
+                </tr>              
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+</div>
+{% endblock %} {% block customjs %}
+<script>
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+});
+
+$('#hitung').on('click', function(e) {
+    $.ajax({
+        url: '/ratetv',
+        type: 'GET',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#hidden-wait').css('visibility','visible');
+            $('#hidden-wait').css('opacity','1');
+        }, 
+        success: function(result) {
+            result = JSON.parse(result); 
+            updateTable(result);
+            $('#hidden-wait').css('opacity','0');                      
+            $('#hidden-wait').css('visibility','hidden');   
+        }
+    });
+});
+
+function updateTable(data) {
+    console.log(data);
+    var temp = $('#tabelBody').find("tr");
+    $(temp[0]).append('<td>' + data.top + '</td>');
+    $(temp[1]).append('<td>' + data.dt + '</td>');
+    $(temp[2]).append('<td>' + data.al + '</td>');
+    $(temp[3]).append('<td>' + data.bc + '</td>');
+}
+$(document).ready(function(){
+    // $('#nav-icon3').click(function(){
+    //     $(this).toggleClass('open');
+    // });
+     $('[data-toggle="tooltip"]').tooltip({container: 'body'}); 
+    $('#user-action').on('click', function(e){
+        $('#nav-icon3').toggleClass('open');
+        $(this).toggleClass('open');
+
+    });
+});
+</script>
+{% endblock %}
